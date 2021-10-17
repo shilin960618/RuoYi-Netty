@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ruoyi</groupId>
-    <artifactId>ruoyi</artifactId>
+    <artifactId>ruoyi-netty</artifactId>
     <version>4.7.0</version>
 
-    <name>ruoyi</name>
+    <name>ruoyi-netty</name>
     <url>http://www.ruoyi.vip</url>
     <description>若依管理系统</description>
     
