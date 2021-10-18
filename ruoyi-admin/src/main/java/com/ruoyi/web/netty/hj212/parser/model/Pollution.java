@@ -295,4 +295,30 @@ public class Pollution {
     public void setNightData(String nightData) {
         this.nightData = nightData;
     }
+
+    @Override
+    public String toString() {
+        return "Pollution{" +
+                "sampleTime='" + sampleTime + '\'' +
+                ", rtd=" + rtd +
+                ", min=" + min +
+                ", avg=" + avg +
+                ", max=" + max +
+                ", zsRtd=" + zsRtd +
+                ", zsMin=" + zsMin +
+                ", zsAvg=" + zsAvg +
+                ", zsMax=" + zsMax +
+                ", flag='" + flag + '\'' +
+                ", eFlag='" + eFlag + '\'' +
+                ", cou=" + cou +
+                ", rs=" + rs +
+                ", rt=" + rt +
+                ", ala=" + ala +
+                ", upValue=" + upValue +
+                ", lowValue=" + lowValue +
+                ", data='" + data + '\'' +
+                ", dayData='" + dayData + '\'' +
+                ", nightData='" + nightData + '\'' +
+                '}';
+    }
 }
