@@ -44,7 +44,7 @@ public class NettyServer implements Runnable {
                 public void initChannel(SocketChannel ch) throws Exception {
 
                     ChannelPipeline pipeline = ch.pipeline();
-                    pipeline.addLast(new LineBasedFrameDecoder(1024));
+                    pipeline.addLast(new LineBasedFrameDecoder(4096));
                     pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
                     pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 
