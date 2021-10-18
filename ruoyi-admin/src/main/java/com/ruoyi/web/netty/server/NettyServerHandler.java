@@ -43,7 +43,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 .enableDefaultVerifyFeatures()
                 .enableDefaultParserFeatures();
         //从T212字符串中读取Data对象
-        Data data = mapper.readData(obj1);
+        Data data = mapper.readData(obj1 + "\r\n");
         log.info(data.toString() + "  ----------接收对象时间 " + DateUtils.getTime());
         byte[] b = obj1.getBytes();
         try {

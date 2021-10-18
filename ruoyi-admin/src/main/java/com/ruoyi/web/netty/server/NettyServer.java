@@ -45,8 +45,8 @@ public class NettyServer implements Runnable {
 
                     ChannelPipeline pipeline = ch.pipeline();
                     pipeline.addLast(new LineBasedFrameDecoder(4096));
-                    pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-                    pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
+                    pipeline.addLast("decoder", new StringDecoder());
+                    pipeline.addLast("encoder", new StringEncoder());
 
                     pipeline.addLast(new ChannelHandler[]{(ChannelHandler) new IdleStateHandler(0, 0, 0)});
 
