@@ -5,10 +5,12 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.AttributeKey;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import java.util.Collections;
@@ -42,10 +44,9 @@ public class NettyServer implements Runnable {
                 public void initChannel(SocketChannel ch) throws Exception {
 
                     ChannelPipeline pipeline = ch.pipeline();
-
-                    pipeline.addLast("decoder", new StringDecoder());
-
-                    pipeline.addLast("encoder", new StringEncoder());
+                    pipeline.addLast(new LineBasedFrameDecoder(1024));
+                    pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
+                    pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 
                     pipeline.addLast(new ChannelHandler[]{(ChannelHandler) new IdleStateHandler(0, 0, 0)});
 
