@@ -37,18 +37,22 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
         Channel incomming = ctx.channel();
-        String obj1 = (String) obj;
-        log.info(obj1 + "  接收参数时间 " + DateUtils.getTime());
+        String msg = new String(((String) obj).getBytes(), "utf-8");
+        if (msg.length() > 2) {
+            String substring = msg.substring(0, 2);
+            if (!substring.equals("##")) {
+                return;
+            }
+        }
+        log.info(msg + "  接收参数时间 " + DateUtils.getTime());
         T212Mapper mapper = new T212Mapper()
                 .enableDefaultVerifyFeatures()
                 .enableDefaultParserFeatures();
         //从T212字符串中读取Data对象
-        Data data = mapper.readData(obj1 + "\r\n");
+        Data data = mapper.readData(msg + "\r\n");
         log.info(data.toString() + "  ----------接收对象时间 " + DateUtils.getTime());
-        byte[] b = obj1.getBytes();
         try {
-            String str = new String(b, "utf-8");
-            System.out.println(str + "123456");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
