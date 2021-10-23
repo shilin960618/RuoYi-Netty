@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysDeviceDataMapper">
+    
+    <resultMap type="SysDeviceData" id="SysDeviceDataResult">
+        <result property="id"    column="id"    />
+        <result property="uuid"    column="uuid"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="result"    column="result"    />
+        <result property="creatTime"    column="creat_time"    />
+    </resultMap>
+
+    <sql id="selectSysDeviceDataVo">
+        select id, uuid, group_name, device_id, device_name, result, creat_time from sys_device_data
+    </sql>
+
+    <select id="selectSysDeviceDataList" parameterType="SysDeviceData" resultMap="SysDeviceDataResult">
+        <include refid="selectSysDeviceDataVo"/>
+        <where>  
+            <if test="uuid != null  and uuid != ''"> and uuid = #{uuid}</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="creatTime != null "> and creat_time = #{creatTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysDeviceDataById" parameterType="Long" resultMap="SysDeviceDataResult">
+        <include refid="selectSysDeviceDataVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysDeviceData" parameterType="SysDeviceData" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_device_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">uuid,</if>
+            <if test="groupName != null">group_name,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="result != null">result,</if>
+            <if test="creatTime != null">creat_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uuid != null">#{uuid},</if>
+            <if test="groupName != null">#{groupName},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="result != null">#{result},</if>
+            <if test="creatTime != null">#{creatTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDeviceData" parameterType="SysDeviceData">
+        update sys_device_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uuid != null">uuid = #{uuid},</if>
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="creatTime != null">creat_time = #{creatTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDeviceDataById" parameterType="Long">
+        delete from sys_device_data where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDeviceDataByIds" parameterType="String">
+        delete from sys_device_data where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

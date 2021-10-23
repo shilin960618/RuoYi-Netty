@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改设备')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-device-edit" th:object="${sysDevice}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">设备名称：</label>
+                <div class="col-sm-8">
+                    <input name="deviceName" th:field="*{deviceName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">网关uuid：</label>
+                <div class="col-sm-8">
+                    <input name="uuid" th:field="*{uuid}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">节点id：</label>
+                <div class="col-sm-8">
+                    <input name="nodeId" th:field="*{nodeId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">阈值：</label>
+                <div class="col-sm-8">
+                    <input name="threshold" th:field="*{threshold}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">最后一次数据：</label>
+                <div class="col-sm-8">
+                    <input name="data" th:field="*{data}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">关联用户id：</label>
+                <div class="col-sm-8">
+                    <input name="users" th:field="*{users}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否在线：</label>
+                <div class="col-sm-8">
+                    <input name="isOnline" th:field="*{isOnline}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">本次报警是否已经发送报警短信，默认0：</label>
+                <div class="col-sm-8">
+                    <input name="isSend" th:field="*{isSend}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">最后回传时间：</label>
+                <div class="col-sm-8">
+                    <input name="sendTime" th:field="*{sendTime}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">开关名称：</label>
+                <div class="col-sm-8">
+                    <input name="switchName" th:field="*{switchName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">电量：</label>
+                <div class="col-sm-8">
+                    <input name="electricity" th:field="*{electricity}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/device";
+        $("#form-device-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-device-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

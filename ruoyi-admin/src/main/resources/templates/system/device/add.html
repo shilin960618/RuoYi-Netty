@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增设备')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-device-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">设备名称：</label>
+                <div class="col-sm-8">
+                    <input name="deviceName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">网关uuid：</label>
+                <div class="col-sm-8">
+                    <input name="uuid" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">节点id：</label>
+                <div class="col-sm-8">
+                    <input name="nodeId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">阈值：</label>
+                <div class="col-sm-8">
+                    <input name="threshold" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">最后一次数据：</label>
+                <div class="col-sm-8">
+                    <input name="data" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">关联用户id：</label>
+                <div class="col-sm-8">
+                    <input name="users" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否在线：</label>
+                <div class="col-sm-8">
+                    <input name="isOnline" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">本次报警是否已经发送报警短信，默认0：</label>
+                <div class="col-sm-8">
+                    <input name="isSend" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">最后回传时间：</label>
+                <div class="col-sm-8">
+                    <input name="sendTime" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">开关名称：</label>
+                <div class="col-sm-8">
+                    <input name="switchName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">电量：</label>
+                <div class="col-sm-8">
+                    <input name="electricity" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/device"
+        $("#form-device-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-device-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>
