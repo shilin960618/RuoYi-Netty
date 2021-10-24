@@ -27,6 +27,11 @@ server:
     max-threads: 800
     # Tomcat启动初始化的线程数，默认值25
     min-spare-threads: 30
+    #开启gzip压缩，优化带宽问题
+    compression:
+      enabled: true
+      mime-types: application/javascript,application/json,application/xml,text/html,text/xml,text/plain,text/css,image/*
+      min-response-size: 2048
  
 # 日志配置
 logging:
