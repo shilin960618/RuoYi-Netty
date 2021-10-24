@@ -1,6 +1,12 @@
 package com.ruoyi.web.controller.system;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.system.Dto.DeviceDataDto;
+import com.ruoyi.system.vo.DataVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,7 +57,15 @@ public class SysDeviceDataController extends BaseController
     {
         startPage();
         List<SysDeviceData> list = sysDeviceDataService.selectSysDeviceDataList(sysDeviceData);
-        return getDataTable(list);
+        List<DeviceDataDto> deviceDataDtos = new ArrayList<>();
+        for (SysDeviceData sysDeviceDataRes:list) {
+            DeviceDataDto deviceDataDto = new DeviceDataDto();
+            DataVo dataVo = JSON.parseObject(sysDeviceDataRes.getResult(), DataVo.class);
+            BeanUtils.copyBeanProp(deviceDataDto,sysDeviceDataRes);
+            BeanUtils.copyBeanProp(deviceDataDto,dataVo);
+            deviceDataDtos.add(deviceDataDto);
+        }
+        return getDataTable(deviceDataDtos);
     }
 
     /**
