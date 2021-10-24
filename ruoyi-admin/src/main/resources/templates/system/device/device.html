@@ -15,44 +15,12 @@
                                 <input type="text" name="deviceName"/>
                             </li>
                             <li>
-                                <label>网关uuid：</label>
+                                <label>网关ID：</label>
                                 <input type="text" name="uuid"/>
                             </li>
                             <li>
-                                <label>节点id：</label>
+                                <label>设备ID：</label>
                                 <input type="text" name="nodeId"/>
-                            </li>
-                            <li>
-                                <label>阈值：</label>
-                                <input type="text" name="threshold"/>
-                            </li>
-                            <li>
-                                <label>最后一次数据：</label>
-                                <input type="text" name="data"/>
-                            </li>
-                            <li>
-                                <label>关联用户id：</label>
-                                <input type="text" name="users"/>
-                            </li>
-                            <li>
-                                <label>是否在线：</label>
-                                <input type="text" name="isOnline"/>
-                            </li>
-                            <li>
-                                <label>本次报警是否已经发送报警短信，默认0：</label>
-                                <input type="text" name="isSend"/>
-                            </li>
-                            <li>
-                                <label>最后回传时间：</label>
-                                <input type="text" name="sendTime"/>
-                            </li>
-                            <li>
-                                <label>开关名称：</label>
-                                <input type="text" name="switchName"/>
-                            </li>
-                            <li>
-                                <label>电量：</label>
-                                <input type="text" name="electricity"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -64,15 +32,15 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:device:add">
-                    <i class="fa fa-plus"></i> 添加
-                </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:device:edit">
-                    <i class="fa fa-edit"></i> 修改
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:device:remove">
-                    <i class="fa fa-remove"></i> 删除
-                </a>
+<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:device:add">-->
+<!--                    <i class="fa fa-plus"></i> 添加-->
+<!--                </a>-->
+<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:device:edit">-->
+<!--                    <i class="fa fa-edit"></i> 修改-->
+<!--                </a>-->
+<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:device:remove">-->
+<!--                    <i class="fa fa-remove"></i> 删除-->
+<!--                </a>-->
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:device:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
@@ -96,25 +64,18 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: "设备",
-                columns: [{
-                    checkbox: true
-                },
-                {
-                    field: 'id',
-                    title: '电量',
-                    visible: false
-                },
+                columns: [
                 {
                     field: 'deviceName',
                     title: '设备名称'
                 },
                 {
                     field: 'uuid',
-                    title: '网关uuid'
+                    title: '网关ID'
                 },
                 {
                     field: 'nodeId',
-                    title: '节点id'
+                    title: '设备ID'
                 },
                 {
                     field: 'threshold',
@@ -125,28 +86,15 @@
                     title: '最后一次数据'
                 },
                 {
-                    field: 'users',
-                    title: '关联用户id'
-                },
-                {
                     field: 'isOnline',
-                    title: '是否在线'
-                },
-                {
-                    field: 'isSend',
-                    title: '本次报警是否已经发送报警短信，默认0'
+                    title: '是否在线',
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
                 },
                 {
                     field: 'sendTime',
                     title: '最后回传时间'
-                },
-                {
-                    field: 'switchName',
-                    title: '开关名称'
-                },
-                {
-                    field: 'electricity',
-                    title: '电量'
                 },
                 {
                     title: '操作',
@@ -161,6 +109,15 @@
             };
             $.table.init(options);
         });
+
+        /* 状态显示 */
+        function statusTools(row) {
+            if (row.status == 1) {
+                return '在线';
+            } else {
+                return '离线';
+            }
+        }
     </script>
 </body>
 </html>

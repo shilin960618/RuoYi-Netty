@@ -143,7 +143,7 @@ public class ResultDataHandler {
             SysDevice sysDeviceUpdate = sysDeviceList.get(0);
             deviceName = sysDeviceUpdate.getDeviceName();
             sysDeviceUpdate.setIsOnline("1");
-            sysDeviceUpdate.setSendTime(dataTime);
+            sysDeviceUpdate.setSendTime(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS,DateUtils.dateTime(DateUtils.YYYYMMDDHHMMSS,dataTime)));
             sysDeviceUpdate.setData(JSON.toJSONString(dataVo));
             sysDeviceUpdate.setUpdateTime(DateUtils.getNowDate());
             iSysDeviceService.updateSysDevice(sysDeviceUpdate);
