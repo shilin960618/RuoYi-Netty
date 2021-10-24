@@ -11,27 +11,16 @@
                     <div class="select-list">
                         <ul>
                             <li>
+                                <label>网关ID：</label>
+                                <input type="text" name="uuid"/>
+                            </li>
+                            <li>
                                 <label>网关名称：</label>
                                 <input type="text" name="name"/>
                             </li>
                             <li>
-                                <label>状态：</label>
-                                <select name="status">
-                                    <option value="">所有</option>
-                                    <option value="-1">代码生成请选择字典属性</option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>状态：</label>
-                                <input type="text" name="deptId"/>
-                            </li>
-                            <li>
-                                <label>地址：</label>
+                                <label>网关地址：</label>
                                 <input type="text" name="addr"/>
-                            </li>
-                            <li>
-                                <label>网关唯一识别id：</label>
-                                <input type="text" name="uuid"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -43,15 +32,15 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:gateway:add">
-                    <i class="fa fa-plus"></i> 添加
-                </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:gateway:edit">
-                    <i class="fa fa-edit"></i> 修改
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:gateway:remove">
-                    <i class="fa fa-remove"></i> 删除
-                </a>
+<!--                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:gateway:add">-->
+<!--                    <i class="fa fa-plus"></i> 添加-->
+<!--                </a>-->
+<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:gateway:edit">-->
+<!--                    <i class="fa fa-edit"></i> 修改-->
+<!--                </a>-->
+<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:gateway:remove">-->
+<!--                    <i class="fa fa-remove"></i> 删除-->
+<!--                </a>-->
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:gateway:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
@@ -75,33 +64,29 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: "网关",
-                columns: [{
-                    checkbox: true
-                },
+                columns: [
                 {
-                    field: 'id',
-                    title: '网关表id',
-                    visible: false
+                    field: 'uuid',
+                    title: '网关ID',
+                    width: 180
                 },
                 {
                     field: 'name',
-                    title: '网关名称'
+                    title: '网关名称',
+                    width: 400
                 },
                 {
                     field: 'status',
-                    title: '状态'
-                },
-                {
-                    field: 'deptId',
-                    title: '状态'
+                    title: '网关状态',
+                    width: 150,
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
                 },
                 {
                     field: 'addr',
-                    title: '地址'
-                },
-                {
-                    field: 'uuid',
-                    title: '网关唯一识别id'
+                    title: '网关地址',
+                    width: 500
                 },
                 {
                     title: '操作',
@@ -116,6 +101,14 @@
             };
             $.table.init(options);
         });
+        /* 状态显示 */
+        function statusTools(row) {
+            if (row.status == 1) {
+                return '在线';
+            } else {
+                return '离线';
+            }
+        }
     </script>
 </body>
 </html>
