@@ -64,6 +64,7 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: "设备",
+                showPageGo: true,
                 columns: [
                 {
                     field: 'deviceName',
@@ -112,7 +113,7 @@
 
         /* 状态显示 */
         function statusTools(row) {
-            if (row.status == 1) {
+            if (row.isOnline == 1) {
                 return '在线';
             } else {
                 return '离线';
