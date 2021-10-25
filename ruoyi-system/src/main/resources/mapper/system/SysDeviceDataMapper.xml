@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''"> and result = #{result}</if>
             <if test="creatTime != null "> and creat_time = #{creatTime}</if>
         </where>
+        order by creat_time desc
     </select>
     
     <select id="selectSysDeviceDataById" parameterType="Long" resultMap="SysDeviceDataResult">
