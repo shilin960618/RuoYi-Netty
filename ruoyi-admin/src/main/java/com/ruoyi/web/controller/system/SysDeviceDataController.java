@@ -64,6 +64,7 @@ public class SysDeviceDataController extends BaseController
     {
         startPage();
         List<SysDeviceData> list = sysDeviceDataService.selectSysDeviceDataList(sysDeviceData);
+        TableDataInfo dataTableInfo = getDataTable(list);
         List<DeviceDataDto> deviceDataDtos = new ArrayList<>();
         for (SysDeviceData sysDeviceDataRes:list) {
             DeviceDataDto deviceDataDto = new DeviceDataDto();
@@ -72,7 +73,8 @@ public class SysDeviceDataController extends BaseController
             BeanUtils.copyBeanProp(deviceDataDto,dataVo);
             deviceDataDtos.add(deviceDataDto);
         }
-        return getDataTable(deviceDataDtos);
+        dataTableInfo.setRows(deviceDataDtos);
+        return dataTableInfo;
     }
 
     /**
