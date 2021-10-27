@@ -58,7 +58,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 .enableDefaultParserFeatures();
         //从T212字符串中读取Data对象
         Data data = mapper.readData(msg + "\r\n");
-        log.info(data.toString() + "  ----------接收对象时间 " + DateUtils.getTime());
         try {
             switch(data.getCn()){
                 case "2011" :
