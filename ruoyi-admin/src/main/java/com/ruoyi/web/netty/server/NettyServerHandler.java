@@ -62,7 +62,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             switch(data.getCn()){
                 case "2011" :
                     //说明上传实时数据
-                    resultDataHandler.dealResultData(data);
+                    resultDataHandler.dealResultData(incomming,data);
                     break; //可选
                 case "9011" :
                     //说明请求应答

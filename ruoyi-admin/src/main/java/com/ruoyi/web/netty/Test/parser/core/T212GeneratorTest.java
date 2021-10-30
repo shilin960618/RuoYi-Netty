@@ -2,11 +2,19 @@ package com.ruoyi.web.netty.Test.parser.core;
 
 
 import com.ruoyi.web.netty.hj212.parser.core.T212Generator;
+import com.ruoyi.web.netty.hj212.parser.core.T212Mapper;
 import com.ruoyi.web.netty.hj212.parser.core.feature.GeneratorFeature;
+import com.ruoyi.web.netty.hj212.parser.exception.T212FormatException;
+import com.ruoyi.web.netty.hj212.parser.model.CpData;
+import com.ruoyi.web.netty.hj212.parser.model.Data;
+import com.ruoyi.web.netty.hj212.parser.model.DataFlag;
 import com.ruoyi.web.netty.hj212.segmentParser.cfger.Feature;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,6 +61,32 @@ public class T212GeneratorTest {
         } finally {
             generator.close();
         }
+    }
+
+
+    // 生产回传对象
+    @Test
+    public void testFeature_ALLOW_KEY_NOT_CLOSED1234() throws IOException, T212FormatException {
+
+        List<DataFlag> dataFlagList = new ArrayList<>();
+        dataFlagList.add(DataFlag.V0);
+        Data dataResult = new Data();
+        dataResult.setQn("11111111");
+        dataResult.setSt("32");
+        dataResult.setCn("9014");
+        dataResult.setPw("123456");
+        dataResult.setMn("LD130133000015");
+        dataResult.setDataFlag(dataFlagList);
+        CpData cp = new CpData();
+        dataResult.setCp(cp);
+
+
+        T212Mapper mapper = new T212Mapper()
+                .enableDefaultParserFeatures()
+                .enableDefaultVerifyFeatures();
+
+        String result = mapper.writeDataAsString(dataResult);
+        System.out.println(result + "111111");
     }
 
 }

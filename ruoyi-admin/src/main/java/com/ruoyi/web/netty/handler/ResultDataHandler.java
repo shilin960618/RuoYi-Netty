@@ -9,15 +9,22 @@ import com.ruoyi.system.service.ISysDeviceDataService;
 import com.ruoyi.system.service.ISysDeviceService;
 import com.ruoyi.system.service.ISysGatewayService;
 import com.ruoyi.system.vo.DataVo;
+import com.ruoyi.web.netty.hj212.parser.core.T212Mapper;
+import com.ruoyi.web.netty.hj212.parser.exception.T212FormatException;
 import com.ruoyi.web.netty.hj212.parser.model.CpData;
 import com.ruoyi.web.netty.hj212.parser.model.Data;
+import com.ruoyi.web.netty.hj212.parser.model.DataFlag;
 import com.ruoyi.web.netty.hj212.parser.model.Pollution;
+import io.netty.channel.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 
 @Component
+@Slf4j
 public class ResultDataHandler {
 
     @Autowired
@@ -29,7 +36,7 @@ public class ResultDataHandler {
     @Autowired
     private ISysDeviceDataService iSysDeviceDataService;
 
-    public void dealResultData(Data data){
+    public void dealResultData(Channel incomming,Data data){
         //说明上传实时数据
         String mn = data.getMn();
         // 首先查询这个网关存不存在，不存在则新增
@@ -158,5 +165,27 @@ public class ResultDataHandler {
         sysDeviceDataInsert.setCreatTime(DateUtils.getNowDate());
         sysDeviceDataInsert.setResult(JSON.toJSONString(dataVo));
         iSysDeviceDataService.insertSysDeviceData(sysDeviceDataInsert);
+
+
+        List<DataFlag> dataFlagList = new ArrayList<>(1);
+        dataFlagList.add(DataFlag.V0);
+        // 构建返回数据
+        Data dataResult = new Data();
+        dataResult.setQn(data.getQn());
+        dataResult.setSt("91");
+        dataResult.setCn("9014");
+        dataResult.setPw(data.getPw());
+        dataResult.setMn(data.getMn());
+        CpData cpResult = new CpData();
+        dataResult.setDataFlag(dataFlagList);
+        dataResult.setCp(cpResult);
+        T212Mapper mapper = new T212Mapper().enableDefaultParserFeatures().enableDefaultVerifyFeatures();
+        String result;
+        try {
+            result = mapper.writeDataAsString(dataResult);
+            incomming.writeAndFlush(result);
+        }catch (IOException | T212FormatException e){
+            log.error("回传数据异常" + e.getLocalizedMessage());
+        }
     }
 }
