@@ -1,6 +1,17 @@
 package com.ruoyi.web.controller.system;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+
+import com.ruoyi.common.utils.DateUtils;
+
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.SysDeviceData;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,11 +72,65 @@ public class SysDeviceController extends BaseController
     @Log(title = "设备", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(SysDevice sysDevice)
-    {
+    public AjaxResult export(SysDevice sysDevice) throws Exception {
         List<SysDevice> list = sysDeviceService.selectSysDeviceList(sysDevice);
-        ExcelUtil<SysDevice> util = new ExcelUtil<SysDevice>(SysDevice.class);
-        return util.exportExcel(list, "设备数据");
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        try{
+            Sheet sheet = wb.createSheet("设备数据");
+            sheet.setColumnWidth(0, 8000);
+            sheet.setColumnWidth(1, 8000);
+            sheet.setColumnWidth(2, 8000);
+            sheet.setColumnWidth(3, 8000);
+            sheet.setColumnWidth(4, 8000);
+            sheet.setColumnWidth(5, 8000);
+            sheet.setColumnWidth(6, 8000);
+            Row row2 = sheet.createRow(0);
+            //创建单元格并设置单元格内容
+            row2.createCell(0).setCellValue("设备名称");
+            row2.createCell(1).setCellValue("网关ID");
+            row2.createCell(2).setCellValue("设备ID");
+            row2.createCell(3).setCellValue("阈值");
+            row2.createCell(4).setCellValue("最后一次数据");
+            row2.createCell(5).setCellValue("是否在线");
+            row2.createCell(6).setCellValue("最后回传时间");
+            Integer index = 1;
+            for (SysDevice device : list) {
+                Row row = sheet.createRow(index);
+                row.createCell(0).setCellValue(device.getDeviceName());
+                row.createCell(1).setCellValue(device.getUuid());
+                row.createCell(2).setCellValue(device.getNodeId());
+                row.createCell(3).setCellValue(device.getThreshold());
+                row.createCell(4).setCellValue(device.getData());
+                if (StringUtils.isNotEmpty(device.getIsOnline()) && device.getIsOnline().equals("1")) {
+                    row.createCell(5).setCellValue("在线");
+                } else {
+                    row.createCell(5).setCellValue("离线");
+                }
+                row.createCell(6).setCellValue(device.getSendTime());
+                index++;
+            }
+        }catch (Exception e){
+            throw new Exception("导出失败");
+        }
+        FileOutputStream fos = null;
+        String absoluteFile = "";
+        String name = "回传";
+        try {
+            absoluteFile = ExcelUtil.getAbsoluteFile(name + "-" + "设备数据"+ "-"+ DateUtils.getDate()+".xlsx");
+            fos = new FileOutputStream(absoluteFile);
+            wb.write(fos);
+            return AjaxResult.success(name + "-" + "设备数据"+ "-"+ DateUtils.getDate()+".xlsx");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            wb.close();
+            fos.close();
+        }
+        return null;
     }
 
     /**
