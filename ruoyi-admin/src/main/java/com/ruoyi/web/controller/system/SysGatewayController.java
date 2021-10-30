@@ -1,6 +1,19 @@
 package com.ruoyi.web.controller.system;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.system.Dto.DeviceDataDto;
+import com.ruoyi.system.domain.SysDeviceData;
+import com.ruoyi.system.vo.DataVo;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,11 +74,49 @@ public class SysGatewayController extends BaseController
     @Log(title = "网关", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(SysGateway sysGateway)
-    {
+    public AjaxResult export(SysGateway sysGateway) throws Exception {
         List<SysGateway> list = sysGatewayService.selectSysGatewayList(sysGateway);
-        ExcelUtil<SysGateway> util = new ExcelUtil<SysGateway>(SysGateway.class);
-        return util.exportExcel(list, "网关数据");
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        try{
+            Sheet sheet = wb.createSheet("网关数据");
+            sheet.setColumnWidth(0, 10000);
+            sheet.setColumnWidth(1, 10000);
+            sheet.setColumnWidth(2, 10000);
+            Row row2 = sheet.createRow(0);
+            //创建单元格并设置单元格内容
+            row2.createCell(0).setCellValue("网关ID");
+            row2.createCell(1).setCellValue("网关名称");
+            row2.createCell(2).setCellValue("网关地址");
+            Integer index = 1;
+            for (SysGateway gateway : list) {
+                Row row = sheet.createRow(index);
+                row.createCell(0).setCellValue(gateway.getUuid());
+                row.createCell(1).setCellValue(gateway.getName());
+                row.createCell(2).setCellValue(gateway.getAddr());
+                index++;
+            }
+        }catch (Exception e){
+            throw new Exception("导出失败");
+        }
+        FileOutputStream fos = null;
+        String absoluteFile = "";
+        String name = "回传";
+        try {
+            absoluteFile = ExcelUtil.getAbsoluteFile(name + "-" + "网关数据"+ "-"+ DateUtils.getDate()+".xlsx");
+            fos = new FileOutputStream(absoluteFile);
+            wb.write(fos);
+            return AjaxResult.success(name + "-" + "网关数据"+ "-"+ DateUtils.getDate()+".xlsx");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            wb.close();
+            fos.close();
+        }
+        return null;
     }
 
     /**
