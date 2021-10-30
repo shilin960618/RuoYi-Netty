@@ -184,6 +184,7 @@ public class ResultDataHandler {
         try {
             result = mapper.writeDataAsString(dataResult);
             incomming.writeAndFlush(result);
+            log.info("回传数据为" + result);
         }catch (IOException | T212FormatException e){
             log.error("回传数据异常" + e.getLocalizedMessage());
         }

@@ -3,6 +3,7 @@ package com.ruoyi.web.netty.server;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.web.netty.handler.DealCheckTimeHandler;
 import com.ruoyi.web.netty.handler.ResultDataHandler;
 import com.ruoyi.web.netty.hj212.parser.core.T212Mapper;
 import com.ruoyi.web.netty.hj212.parser.model.Data;
@@ -26,6 +27,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Autowired
     private ResultDataHandler resultDataHandler = SpringUtils.getBean("resultDataHandler");
+
+    @Autowired
+    private DealCheckTimeHandler dealCheckTimeHandler = SpringUtils.getBean("dealCheckTimeHandler");
 
     public static ChannelGroup channels = (ChannelGroup) new DefaultChannelGroup(
             (EventExecutor) GlobalEventExecutor.INSTANCE);
@@ -60,14 +64,17 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         Data data = mapper.readData(msg + "\r\n");
         try {
             switch(data.getCn()){
+                case "1013" :
+                    //说明请求校时
+                    dealCheckTimeHandler.dealCheckTime(incomming,data);
+                    break; //可选
                 case "2011" :
                     //说明上传实时数据
                     resultDataHandler.dealResultData(incomming,data);
                     break; //可选
                 case "9011" :
-                    //说明请求应答
+                    //说明是现场向服务器传递信息，不处理
                     break; //可选
-                //你可以有任意数量的case语句
                 default : //可选
                     //语句
             }
