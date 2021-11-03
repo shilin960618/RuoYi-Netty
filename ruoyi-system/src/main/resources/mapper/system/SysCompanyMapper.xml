@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCompanyMapper">
+    
+    <resultMap type="SysCompany" id="SysCompanyResult">
+        <result property="id"    column="id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="companyCode"    column="company_code"    />
+        <result property="streetId"    column="street_id"    />
+        <result property="address"    column="address"    />
+        <result property="industry"    column="industry"    />
+        <result property="legalPerson"    column="legal_person"    />
+        <result property="mobilePhone"    column="mobile_phone"    />
+        <result property="phone"    column="phone"    />
+        <result property="principal"    column="principal"    />
+        <result property="isSms"    column="is_sms"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="remark"    column="remark"    />
+        <result property="mnCode"    column="mn_code"    />
+        <result property="wayCode"    column="way_code"    />
+        <result property="wayCodeChannel"    column="way_code_channel"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysCompanyVo">
+        select id, company_name, company_code, street_id, address, industry, legal_person, mobile_phone, phone, principal, is_sms, longitude, latitude, remark, mn_code, way_code, way_code_channel, create_time, update_time from sys_company
+    </sql>
+
+    <select id="selectSysCompanyList" parameterType="SysCompany" resultMap="SysCompanyResult">
+        <include refid="selectSysCompanyVo"/>
+        <where>  
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="companyCode != null  and companyCode != ''"> and company_code = #{companyCode}</if>
+            <if test="streetId != null "> and street_id = #{streetId}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="industry != null "> and industry = #{industry}</if>
+            <if test="legalPerson != null  and legalPerson != ''"> and legal_person = #{legalPerson}</if>
+            <if test="mobilePhone != null  and mobilePhone != ''"> and mobile_phone = #{mobilePhone}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="isSms != null  and isSms != ''"> and is_sms = #{isSms}</if>
+            <if test="longitude != null  and longitude != ''"> and longitude = #{longitude}</if>
+            <if test="latitude != null  and latitude != ''"> and latitude = #{latitude}</if>
+            <if test="mnCode != null  and mnCode != ''"> and mn_code = #{mnCode}</if>
+            <if test="wayCode != null  and wayCode != ''"> and way_code = #{wayCode}</if>
+            <if test="wayCodeChannel != null  and wayCodeChannel != ''"> and way_code_channel = #{wayCodeChannel}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysCompanyById" parameterType="Long" resultMap="SysCompanyResult">
+        <include refid="selectSysCompanyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysCompany" parameterType="SysCompany" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyName != null">company_name,</if>
+            <if test="companyCode != null">company_code,</if>
+            <if test="streetId != null">street_id,</if>
+            <if test="address != null">address,</if>
+            <if test="industry != null">industry,</if>
+            <if test="legalPerson != null">legal_person,</if>
+            <if test="mobilePhone != null">mobile_phone,</if>
+            <if test="phone != null">phone,</if>
+            <if test="principal != null">principal,</if>
+            <if test="isSms != null">is_sms,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="remark != null">remark,</if>
+            <if test="mnCode != null">mn_code,</if>
+            <if test="wayCode != null">way_code,</if>
+            <if test="wayCodeChannel != null">way_code_channel,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyName != null">#{companyName},</if>
+            <if test="companyCode != null">#{companyCode},</if>
+            <if test="streetId != null">#{streetId},</if>
+            <if test="address != null">#{address},</if>
+            <if test="industry != null">#{industry},</if>
+            <if test="legalPerson != null">#{legalPerson},</if>
+            <if test="mobilePhone != null">#{mobilePhone},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="principal != null">#{principal},</if>
+            <if test="isSms != null">#{isSms},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="mnCode != null">#{mnCode},</if>
+            <if test="wayCode != null">#{wayCode},</if>
+            <if test="wayCodeChannel != null">#{wayCodeChannel},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCompany" parameterType="SysCompany">
+        update sys_company
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="companyCode != null">company_code = #{companyCode},</if>
+            <if test="streetId != null">street_id = #{streetId},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="industry != null">industry = #{industry},</if>
+            <if test="legalPerson != null">legal_person = #{legalPerson},</if>
+            <if test="mobilePhone != null">mobile_phone = #{mobilePhone},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="isSms != null">is_sms = #{isSms},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="mnCode != null">mn_code = #{mnCode},</if>
+            <if test="wayCode != null">way_code = #{wayCode},</if>
+            <if test="wayCodeChannel != null">way_code_channel = #{wayCodeChannel},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCompanyById" parameterType="Long">
+        delete from sys_company where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCompanyByIds" parameterType="String">
+        delete from sys_company where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
