@@ -15,8 +15,11 @@
                                 <input type="text" name="companyName"/>
                             </li>
                             <li>
-                                <label>关联街道：</label>
-                                <input type="text" name="streetId"/>
+                                <label>街道：</label>
+                                <select name="streetId" th:with="type=${@dict.getType('sys_dict_street')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
                             </li>
                             <li>
                                 <label>详细地址：</label>
@@ -24,7 +27,10 @@
                             </li>
                             <li>
                                 <label>行业分类：</label>
-                                <input type="text" name="industry"/>
+                                <select name="industry" th:with="type=${@dict.getType('sys_dict_industry')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -73,7 +79,7 @@
                 },
                 {
                     field: 'streetId',
-                    title: '关联街道'
+                    title: '街道'
                 },
                 {
                     field: 'address',
@@ -98,10 +104,6 @@
                 {
                     field: 'principal',
                     title: '环保负责人'
-                },
-                {
-                    field: 'isSms',
-                    title: '是否短信'
                 },
                 {
                     field: 'longitude',
