@@ -92,7 +92,10 @@
                         <label class="col-sm-3 control-label">是否短信</label>
                         <div class="col-sm-9">
                             <div class="input-group">
-                                <input name="isSms" class="form-control" type="text">
+                                <label class="toggle-switch switch-solid">
+                                    <input type="checkbox" id="isSms" checked>
+                                    <span></span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -173,7 +176,10 @@
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-company-add').serialize());
+                var data = $('#form-company-add').serializeArray();
+                var isSms = $("input[id='isSms']").is(':checked') == true ? 0 : 1;
+                data.push({"name": "isSms", "value": isSms});
+                $.operate.save(prefix + "/add", data);
             }
         }
     </script>
