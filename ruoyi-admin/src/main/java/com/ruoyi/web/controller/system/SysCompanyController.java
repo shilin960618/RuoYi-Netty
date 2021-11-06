@@ -1,10 +1,16 @@
 package com.ruoyi.web.controller.system;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.common.utils.DictUtils;
+import com.ruoyi.common.utils.bean.BeanUtils;
+import com.ruoyi.system.Dto.SysCompanyDto;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +37,10 @@ public class SysCompanyController extends BaseController
 {
     private String prefix = "system/company";
 
+    private String sysDictIndustry = "sys_dict_industry";
+
+    private String sysDictStreet = "sys_dict_street";
+
     @Autowired
     private ISysCompanyService sysCompanyService;
 
@@ -51,7 +61,26 @@ public class SysCompanyController extends BaseController
     {
         startPage();
         List<SysCompany> list = sysCompanyService.selectSysCompanyList(sysCompany);
-        return getDataTable(list);
+        TableDataInfo dataTable = getDataTable(list);
+
+        List<SysCompanyDto> sysCompanyDtoList = new ArrayList<>();
+        for (SysCompany sysCompanyResult:list) {
+            SysCompanyDto sysCompanyDto = new SysCompanyDto();
+            BeanUtils.copyBeanProp(sysCompanyDto,sysCompanyResult);
+            if (!ObjectUtils.isEmpty(sysCompanyResult.getIndustry())) {
+                Long industry = sysCompanyResult.getIndustry();
+                String industryName = DictUtils.getDictLabel(sysDictIndustry, industry.toString());
+                sysCompanyDto.setIndustryName(industryName);
+            }
+            if (!ObjectUtils.isEmpty(sysCompanyResult.getStreetId())) {
+                Long streetId = sysCompanyResult.getStreetId();
+                String streetName = DictUtils.getDictLabel(sysDictStreet, streetId.toString());
+                sysCompanyDto.setStreetName(streetName);
+            }
+            sysCompanyDtoList.add(sysCompanyDto);
+        }
+        dataTable.setRows(sysCompanyDtoList);
+        return dataTable;
     }
 
     /**
