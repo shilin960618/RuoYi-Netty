@@ -1,11 +1,20 @@
 package com.ruoyi.web.controller.system;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.DictUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.system.Dto.SysCompanyDto;
+import com.ruoyi.system.domain.SysGateway;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,11 +99,108 @@ public class SysCompanyController extends BaseController
     @Log(title = "企业", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(SysCompany sysCompany)
-    {
+    public AjaxResult export(SysCompany sysCompany) throws Exception {
         List<SysCompany> list = sysCompanyService.selectSysCompanyList(sysCompany);
-        ExcelUtil<SysCompany> util = new ExcelUtil<SysCompany>(SysCompany.class);
-        return util.exportExcel(list, "企业数据");
+        List<SysCompanyDto> sysCompanyDtoList = new ArrayList<>();
+        for (SysCompany sysCompanyResult:list) {
+            SysCompanyDto sysCompanyDto = new SysCompanyDto();
+            BeanUtils.copyBeanProp(sysCompanyDto,sysCompanyResult);
+            if (!ObjectUtils.isEmpty(sysCompanyResult.getIndustry())) {
+                Long industry = sysCompanyResult.getIndustry();
+                String industryName = DictUtils.getDictLabel(sysDictIndustry, industry.toString());
+                sysCompanyDto.setIndustryName(industryName);
+            }
+            if (!ObjectUtils.isEmpty(sysCompanyResult.getStreetId())) {
+                Long streetId = sysCompanyResult.getStreetId();
+                String streetName = DictUtils.getDictLabel(sysDictStreet, streetId.toString());
+                sysCompanyDto.setStreetName(streetName);
+            }
+            if (StringUtils.isNotEmpty(sysCompanyResult.getIsSms()) && sysCompanyResult.getIsSms().equals("0")) {
+                sysCompanyDto.setSmsName("打开");
+            } else {
+                sysCompanyDto.setSmsName("关闭");
+            }
+            sysCompanyDtoList.add(sysCompanyDto);
+        }
+
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        try{
+            Sheet sheet = wb.createSheet("企业数据");
+            sheet.setColumnWidth(0, 10000);
+            sheet.setColumnWidth(1, 5000);
+            sheet.setColumnWidth(2, 5000);
+            sheet.setColumnWidth(3, 10000);
+            sheet.setColumnWidth(4, 5000);
+            sheet.setColumnWidth(5, 5000);
+            sheet.setColumnWidth(6, 5000);
+            sheet.setColumnWidth(7, 5000);
+            sheet.setColumnWidth(8, 5000);
+            sheet.setColumnWidth(9, 5000);
+            sheet.setColumnWidth(10, 5000);
+            sheet.setColumnWidth(11, 5000);
+            sheet.setColumnWidth(12, 10000);
+            sheet.setColumnWidth(13, 5000);
+            sheet.setColumnWidth(14, 5000);
+            sheet.setColumnWidth(15, 5000);
+            Row row2 = sheet.createRow(0);
+            //创建单元格并设置单元格内容
+            row2.createCell(0).setCellValue("企业名称");
+            row2.createCell(1).setCellValue("统一社会信用代码");
+            row2.createCell(2).setCellValue("街道");
+            row2.createCell(3).setCellValue("详细地址");
+            row2.createCell(4).setCellValue("行业分类");
+            row2.createCell(5).setCellValue("法人");
+            row2.createCell(6).setCellValue("联系手机");
+            row2.createCell(7).setCellValue("电话");
+            row2.createCell(8).setCellValue("短信状态");
+            row2.createCell(9).setCellValue("环保负责人");
+            row2.createCell(10).setCellValue("经度");
+            row2.createCell(11).setCellValue("纬度");
+            row2.createCell(12).setCellValue("备注");
+            row2.createCell(13).setCellValue("MN码");
+            row2.createCell(14).setCellValue("网关设备号");
+            row2.createCell(15).setCellValue("网关频道号");
+            Integer index = 1;
+            for (SysCompanyDto sysCompanyDto : sysCompanyDtoList) {
+                Row row = sheet.createRow(index);
+                row.createCell(0).setCellValue(sysCompanyDto.getCompanyName());
+                row.createCell(1).setCellValue(sysCompanyDto.getCompanyCode());
+                row.createCell(2).setCellValue(sysCompanyDto.getStreetName());
+                row.createCell(3).setCellValue(sysCompanyDto.getAddress());
+                row.createCell(4).setCellValue(sysCompanyDto.getIndustryName());
+                row.createCell(5).setCellValue(sysCompanyDto.getLegalPerson());
+                row.createCell(6).setCellValue(sysCompanyDto.getMobilePhone());
+                row.createCell(7).setCellValue(sysCompanyDto.getPhone());
+                row.createCell(8).setCellValue(sysCompanyDto.getSmsName());
+                row.createCell(9).setCellValue(sysCompanyDto.getPrincipal());
+                row.createCell(10).setCellValue(sysCompanyDto.getLongitude());
+                row.createCell(11).setCellValue(sysCompanyDto.getLatitude());
+                row.createCell(12).setCellValue(sysCompanyDto.getRemark());
+                row.createCell(13).setCellValue(sysCompanyDto.getMnCode());
+                row.createCell(14).setCellValue(sysCompanyDto.getWayCode());
+                row.createCell(15).setCellValue(sysCompanyDto.getWayCodeChannel());
+                index++;
+            }
+        }catch (Exception e){
+            throw new Exception("导出失败");
+        }
+        FileOutputStream fos = null;
+        String absoluteFile = "";
+        String name = "企业";
+        try {
+            absoluteFile = ExcelUtil.getAbsoluteFile(name + "-" + "企业数据"+ "-"+ DateUtils.getDate()+".xlsx");
+            fos = new FileOutputStream(absoluteFile);
+            wb.write(fos);
+            return AjaxResult.success(name + "-" + "企业数据"+ "-"+ DateUtils.getDate()+".xlsx");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            wb.close();
+            fos.close();
+        }
+        return null;
     }
 
     /**

@@ -7,6 +7,8 @@ public class SysCompanyDto extends SysCompany {
 
     private String streetName;
 
+    private String smsName;
+
     public String getIndustryName() {
         return industryName;
     }
@@ -23,11 +25,20 @@ public class SysCompanyDto extends SysCompany {
         this.streetName = streetName;
     }
 
+    public String getSmsName() {
+        return smsName;
+    }
+
+    public void setSmsName(String smsName) {
+        this.smsName = smsName;
+    }
+
     @Override
     public String toString() {
         return "SysCompanyDto{" +
                 "industryName='" + industryName + '\'' +
                 ", streetName='" + streetName + '\'' +
+                ", smsName='" + smsName + '\'' +
                 '}';
     }
 }
