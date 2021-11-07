@@ -258,4 +258,15 @@ public class SysCompanyController extends BaseController
     {
         return toAjax(sysCompanyService.deleteSysCompanyByIds(ids));
     }
+
+    /**
+     * 查询字典详细
+     */
+    @RequiresPermissions("system:company:list")
+    @GetMapping("/detail/{companyId}")
+    public String detail(@PathVariable("companyId") Long companyId, ModelMap mmap)
+    {
+        mmap.put("companyId", companyId);
+        return "system/workshop/workshop";
+    }
 }
